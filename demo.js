@@ -1,7 +1,6 @@
-import * as stat from "./src/stat.js"
-import * as ppl from "./src/core.js"
+import { stat, ppl } from "./src/index.js"
 
-console.log("Running PPL.js demo.")
+console.log("Running PPL.js demo!")
 
 const model = new ppl.Model(
   data => {
