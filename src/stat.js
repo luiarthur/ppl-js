@@ -99,15 +99,13 @@ function variance(x) {
 
 const std = x => Math.sqrt(variance(x))
 
-function linspace(startValue, stopValue, cardinality) {
-  var arr = [];
-  var step = (stopValue - startValue) / (cardinality - 1);
-  for (var i = 0; i < cardinality; i++) {
-    arr.push(startValue + (step * i));
-  }
-  return arr;
+function linspace(start, stop, num, endpoint = true) {
+    const div = endpoint ? (num - 1) : num
+    const step = (stop - start) / div
+    return Array.from({length: num}, (_, i) => start + step * i)
 }
-module.exports = {
+
+export {
   Normal, Uniform, DistArray, DistFill,
   mean, sum, variance, linspace,
   rand, randn

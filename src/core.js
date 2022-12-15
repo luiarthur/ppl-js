@@ -1,5 +1,3 @@
-const assert = require("assert")
-
 // Global handler stack.
 const _stack = []
 
@@ -15,7 +13,12 @@ class Handler {
   constructor(fn) { this.fn = fn }
 
   #push() { _stack.push(this) }
-  #pop() { assert(_stack.pop() === this) }
+  #pop() {
+    console.assert(
+      _stack.pop() === this,
+      "Unexpected handler encountered! Run `ppl.clear_stack()`."
+    )
+  }
 
   run(args) {
     this.#push()
@@ -35,7 +38,10 @@ class Trace extends Handler {
   }
 
   postprocess(msg) {
-    assert(!haskey(this.result, msg.name), "Sample sites must have unique names!")
+    console.assert(
+      !haskey(this.result, msg.name),
+      "Sample sites must have unique names!"
+    )
     this.result[msg.name] = Object.assign({}, msg)
   }
 
@@ -64,7 +70,7 @@ const condition = (fn, substate) => (new Condition(fn, substate))
 
 function apply_stack(msg) {
   // Reverse in place.
-  for (handler of _stack.reverse()) {
+  for (const handler of _stack.reverse()) {
     handler.process(msg)
   }
 
@@ -73,7 +79,7 @@ function apply_stack(msg) {
   }
 
   // Reverse again, so order is back to original.
-  for (handler of _stack.reverse()) {
+  for (const handler of _stack.reverse()) {
     handler.postprocess(msg)
   }
 
@@ -95,12 +101,12 @@ function sample(name, dist, obs=null) {
 }
  
 function logpdf(model, state, args) {
-  t = trace(condition(model, state)).get_trace(args)
+  const t = trace(condition(model, state)).get_trace(args)
   let lp = 0
   
   const names = Object.keys(t)
   for (name of names) {
-    param = t[name]
+    const param = t[name]
     lp += param.dist.logpdf(param.value)
   }
   return lp
@@ -114,7 +120,7 @@ class Model {
   run(data) { return this.model(data) }
 }
 
-module.exports = {
+export {
   trace, condition, logpdf, sample, Model,
   clear_stack, haskey
 }
