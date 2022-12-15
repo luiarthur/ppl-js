@@ -1,5 +1,5 @@
-serve:
-	python3 -m http.server 8000
-
 demo:
 	node demo.js
+
+count:
+	find src -name '*.js' | xargs wc -l

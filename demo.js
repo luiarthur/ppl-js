@@ -46,4 +46,3 @@ const profile = ms.map(m => ppl.logpdf(model, {mu: m, sigma: 0.5}, big_data))
 ms.forEach(function(m, i) {
   console.log(`${m.toFixed(2)}: ${profile[i].toFixed(2)}`)
 })
-
