@@ -1,7 +1,7 @@
 # ppl.js
-A simple probabilistic programming language for javascript.
+A simple probabilistic programming language for javascript, implemented in typescript.
 
-A very simple PPL in under 250 lines of javascript.
+A very simple PPL in under 300 lines of typescript.
 
 ## Count lines
 ```console
@@ -13,3 +13,6 @@ Demo requires Node.
 ```console
 > make demo
 ```
+
+## Using this
+See github.com/luiarthur/ppl-js-demo

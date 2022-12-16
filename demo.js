@@ -1,4 +1,4 @@
-import { stat, ppl } from "./src/index.js"
+import { stat, ppl } from "./dist/ppl.js"
 
 console.log("Running PPL.js demo!")
 
@@ -7,7 +7,7 @@ const model = new ppl.Model(
     const mu = ppl.sample("mu", new stat.Normal(0, 3))
     const sigma = ppl.sample("sigma", new stat.Uniform(0, 1))
 
-    const likelihood = ppl.haskey(data, "x") ? new stat.DistArray(
+    const likelihood = data.hasOwnProperty("x") ? new stat.DistArray(
       data.x.map(_ => new stat.Normal(mu, sigma))
     ) : new stat.DistFill(new stat.Normal(mu, sigma), data.num_obs)
 

@@ -2,10 +2,15 @@
   "name": "ppl.js",
   "version": "0.1.0",
   "description": "A simple PPL for js",
-  "main": "src/index.js",
+  "main": "dist/ppl.js",
   "scripts": {
-    "start": "python3 -m http.server 8000",
-    "count": "find src -name '*.js' | xargs wc -l",
+    "start": "npm run lite",
+    "lite": "lite-server",
+    "count": "find src -name '*.ts' | xargs wc -l",
+    "watch": "npx tsc --watch",
+    "build": "npx tsc",
+    "clean": "rm -f dist/* && rm *.tsbuildinfo",
+    "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,5 +27,9 @@
   "bugs": {
     "url": "https://github.com/luiarthur/ppl.js/issues"
   },
-  "homepage": "https://github.com/luiarthur/ppl.js#readme"
+  "homepage": "https://github.com/luiarthur/ppl.js#readme",
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "typescript": "^4.9.4"
+  }
 }
