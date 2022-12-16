@@ -14,7 +14,7 @@ Demo requires Node.
 > make demo
 ```
 
-## Using this
+## Usage
 To use this in a project, do the following:
 
 ```console
