@@ -1,4 +1,4 @@
-import { stat, ppl } from "./index.js"
+import { stat, ppl } from "./src/index.js"
 
 console.log("Running PPL.js demo!")
 
