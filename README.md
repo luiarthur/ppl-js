@@ -1,4 +1,4 @@
-# ppl.js
+# ppl-js
 A simple probabilistic programming language for javascript, implemented in typescript.
 
 A very simple PPL in under 300 lines of typescript.
