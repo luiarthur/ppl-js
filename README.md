@@ -16,3 +16,8 @@ Demo requires Node.
 
 ## Using this
 See github.com/luiarthur/ppl-js-demo
+
+## Recreate environment
+```console
+npm i
+```

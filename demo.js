@@ -1,6 +1,6 @@
 import { stat, ppl } from "./dist/ppl.js"
 
-console.log("Running PPL.js demo!")
+console.log("Running ppl-js demo!")
 
 const model = new ppl.Model(
   data => {
