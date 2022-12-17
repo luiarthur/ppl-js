@@ -20,6 +20,15 @@ function sum(x: Vector) {
   return s
 }
 
+function product(x: Vector) {
+  const n = x.length
+  let s = 1
+  x.forEach(xi => {
+    s *= xi
+  })
+  return s
+}
+
 const mean = (x: Vector) => sum(x) / x.length
 
 function variance(x: Vector) {
@@ -118,6 +127,6 @@ class Normal extends Distribution<number> {
 
 export {
   Distribution, Normal, Uniform, DistArray, DistFill,
-  mean, sum, variance, linspace,
+  mean, sum, variance, linspace, product,
   rand, randn
 }
