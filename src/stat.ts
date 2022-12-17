@@ -96,7 +96,11 @@ class Uniform extends Distribution<number> {
   }
 
   logpdf(x: number) {
-    return -Math.log(this.upper - this.lower)
+    if (x > this.upper || x < this.lower) {
+      return -Infinity
+    } else {
+      return -Math.log(this.upper - this.lower)
+    }
   }
 
   sample() {
@@ -127,6 +131,6 @@ class Normal extends Distribution<number> {
 
 export {
   Distribution, Normal, Uniform, DistArray, DistFill,
-  mean, sum, variance, linspace, product,
+  mean, sum, variance, linspace, product, std,
   rand, randn
 }

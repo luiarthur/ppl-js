@@ -1,48 +1,48 @@
 import { Distribution } from "./stat.js"
 
 type Dict<T> = {[key: string]: T}
+type Data = Dict<any>
+type Vector = Array<number>
+type Numeric = Vector | number
+type Runner = Model<any> | Handler<any>
 
 class Message<T> {
     name: string
     dist: Distribution<T>
     value?: T
     observed: boolean
+    type: string
 
-    constructor(name: string, dist: Distribution<T>, value?: T) {
+    constructor(name: string, dist: Distribution<T>, type: string, value?: T) {
         this.name = name
         this.dist = dist
         this.value = value
         this.observed = !(value === undefined)
+        this.type = type
     }
 }
 
-abstract class Runner {
-    abstract run(data: Dict<any>): void
-}
+class Model<T extends Data> {
+    model: (data: T) => void
 
-class Model extends Runner {
-    model: (_: Dict<any>) => void
-
-    constructor(model: (_: Dict<any>) => void) {
-        super()
+    constructor(model: (data: T) => void) {
         this.model = model
     }
 
-    run = (data: Dict<any>) => this.model(data)
+    run = (data: T) => this.model(data)
 }
 
-const _stack: Array<Handler> = []
+const _stack: Array<Handler<any>> = []
 function clear_stack() {
   while(_stack.length > 0) {
     _stack.pop()
   }
 }
 
-class Handler extends Runner {
+class Handler<T extends Data> {
     fn: Runner
 
     constructor(fn: Runner) {
-        super()
         this.fn = fn
     }
 
@@ -57,17 +57,17 @@ class Handler extends Runner {
         )
     }
 
-    run(data: Dict<any>) {
+    run(data: T) {
         this.push()
         this.fn.run(data)
         this.pop()
     }
 
-    process<T>(msg: Message<T>) {}
-    postprocess<T>(msg: Message<T>) {}
+    process<S>(msg: Message<S>) {}
+    postprocess<S>(msg: Message<S>) {}
 }
 
-class Trace extends Handler {
+class Trace<T extends Data> extends Handler<T> {
     result: Dict<any>
 
     constructor(fn: Runner) {
@@ -83,7 +83,7 @@ class Trace extends Handler {
         this.result[msg.name] = Object.assign({}, msg)
     }
 
-    get_trace(data: Dict<any>) {
+    get_trace(data: T) {
         this.run(data)
         return this.result
     }
@@ -91,9 +91,9 @@ class Trace extends Handler {
 
 const trace = (fn: Runner) => (new Trace(fn))
 
-class Condition extends Handler {
-    substate: Dict<any>
-    constructor(fn: Runner, substate: Dict<any>) {
+class Condition<T extends Data, S extends Data> extends Handler<T> {
+    substate: S
+    constructor(fn: Runner, substate: S) {
         super(fn)
         this.substate = substate
     }
@@ -131,21 +131,42 @@ function sample<T>(name: string, dist: Distribution<T>, obs?: T): T {
     if (_stack.length == 0) {
         return dist.sample()
     } else {
-        const msg = new Message(name, dist, obs)
+        const msg = new Message(name, dist, "sample", obs)
         return apply_stack(msg).value!
     }
 }
 
-function logpdf(model: Model, state: Dict<any>, args: Dict<any>) {
-  const t = trace(condition(model, state)).get_trace(args)
-  let lp = 0
+function logpdf<T extends Data, S extends Data>(
+    model: Model<T>, state: S, data: T
+) {
+  // console.log(state)
+  const t = trace(condition(model, state)).get_trace(data)
+  let lp: number = 0
   
   const names = Object.keys(t)
   names.forEach(name => {
     const param = t[name]
     lp += param.dist.logpdf(param.value)
   })
+
+
   return lp
 }
 
-export { trace, condition, logpdf, sample, Model, clear_stack }
+function predictive<T extends Data>(
+    model: Model<T>, data: Dict<Numeric>, substate?: Dict<Numeric>
+) {
+    const t = (substate === undefined) ? trace(model).get_trace(data) :
+        trace(condition(model, substate)).get_trace(data)
+
+    const out: Dict<Numeric> = {}
+    for (const name in t) {
+        const msg = t[name]
+        if (msg.type == "sample" && !msg.observed) {
+            out[name] = msg.value
+        }
+    }
+    return out
+}
+
+export { trace, condition, logpdf, sample, Model, clear_stack, predictive}
