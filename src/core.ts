@@ -1,4 +1,5 @@
 import { Distribution } from "./stat.js"
+
 type Dict<T> = {[key: string]: T}
 
 class Message<T> {
