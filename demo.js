@@ -52,9 +52,12 @@ const model = new ppl.Model(
 // })
 // document.getElementById(`demo-profile`).innerHTML = result
 
+// True population
+const true_pop_dist = new stat.Normal(3, 0.5)
+
 // MCMC
 const big_data = {
-  x: stat.DistFill(new stat.Normal(3, 0.5), 2000).sample()
+  x: stat.DistFill(true_pop_dist, 2000).sample()
 }
 
 const mcmc = inference.mvrwm(
@@ -80,6 +83,10 @@ const summaries = bundle(chain)
 document.getElementById(`demo-mcmc`).innerHTML = `
 <h2>MCMC</h2>
 
+<h3>True Population Distribution</h3>
+<p>${JSON.stringify(true_pop_dist)}</p>
+
+<h3>Posterior Samples</h3>
 ${JSON.stringify(chain)}
 
 <h3>mu</h3>
